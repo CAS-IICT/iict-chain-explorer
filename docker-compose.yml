@@ -22,9 +22,9 @@ services:
       - COIN=ETH
       - ETHEREUM_JSONRPC_VARIANT=besu
       - ETHEREUM_JSONRPC_TRANSPORT=http
-      - ETHEREUM_JSONRPC_HTTP_URL=http://member.iict.cas-ll.net:8545
-      - ETHEREUM_JSONRPC_TRACE_URL=http://member.iict.cas-ll.net:8545
-      - ETHEREUM_JSONRPC_WS_URL=ws://member.iict.cas-ll.net:8546
+      - ETHEREUM_JSONRPC_HTTP_URL=http://besu:8545
+      - ETHEREUM_JSONRPC_TRACE_URL=http://besu:8545
+      - ETHEREUM_JSONRPC_WS_URL=ws://besu:8546
       - DISABLE_EXCHANGE_RATES=true
       - DISABLE_KNOWN_TOKENS=true
       - ENABLE_TXS_STATS=true
