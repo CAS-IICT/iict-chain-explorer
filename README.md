@@ -1,6 +1,6 @@
 # 区块链浏览器
 
-## 配置
+## blockscout配置
 
 复制.env_sample 为.env，修改相关环境变量
 
@@ -15,7 +15,7 @@ map $http_upgrade $connection_upgrade {
 server
 {
     listen 80;
-	listen 443 ssl http2;
+    listen 443 ssl http2;
     server_name explorer.cas-ll.com;
     index index.php index.html index.htm default.php default.htm default.html;
     root /www/wwwroot/explorer.cas-ll.com;
@@ -41,11 +41,11 @@ server
     
     #PHP-INFO-START  PHP引用配置，可以注释或修改
     
-	#引用反向代理规则，注释后配置的反向代理将无效
-	include /www/server/panel/vhost/nginx/proxy/explorer.cas-ll.com/*.conf;
+    #引用反向代理规则，注释后配置的反向代理将无效
+    include /www/server/panel/vhost/nginx/proxy/explorer.cas-ll.com/*.conf;
 
     location ^~ / {
-        proxy_pass http://127.0.0.1:8080;
+        proxy_pass http://127.0.0.1:4000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -101,7 +101,7 @@ server
         error_log /dev/null;
         access_log /dev/null;
     }
-	access_log  /www/wwwlogs/explorer.cas-ll.com.log;
+    access_log  /www/wwwlogs/explorer.cas-ll.com.log;
     error_log  /www/wwwlogs/explorer.cas-ll.com.error.log;
 }
 ```
