@@ -6,25 +6,43 @@ networks:
       name: iict-chain-member_default
 
 services:
-
+  postgres:
+    image: postgres:13.4-alpine
+    container_name: postgres
+    restart: "on-failure"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    ports:
+      - 5432
+    networks:
+      - explorer
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+  
   blockscout:
     image: consensys/blockscout:v4.0.0-beta
     container_name: blockscout
     restart: "no"
     environment:
-      - PORT=4000
-      - DATABASE_URL=ecto://postgres:postgres@postgres/postgres?ssl=false
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
+      - PORT=${BLOCKSCOUT_PORT}
+      - DATABASE_URL=ecto://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/postgres?ssl=false
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - NETWORK=中科乐联
       - SUBNETWORK=雨海纪
       - CHAIN_ID=1337
       - COIN=ETH
       - ETHEREUM_JSONRPC_VARIANT=besu
       - ETHEREUM_JSONRPC_TRANSPORT=http
-      - ETHEREUM_JSONRPC_HTTP_URL=http://besu:8545
-      - ETHEREUM_JSONRPC_TRACE_URL=http://besu:8545
-      - ETHEREUM_JSONRPC_WS_URL=ws://besu:8546
+      - ETHEREUM_JSONRPC_HTTP_URL=${ETHEREUM_JSONRPC_HTTP_URL}
+      - ETHEREUM_JSONRPC_TRACE_URL=${ETHEREUM_JSONRPC_HTTP_URL}
+      - ETHEREUM_JSONRPC_WS_URL=${ETHEREUM_JSONRPC_WS_URL}
       - DISABLE_EXCHANGE_RATES=true
       - DISABLE_KNOWN_TOKENS=true
       - ENABLE_TXS_STATS=true
@@ -45,28 +63,9 @@ services:
     links:
       - postgres
     ports:
-      - 8080:4000
+      - ${BLOCKSCOUT_PORT}:${BLOCKSCOUT_PORT}
     volumes:
       - ./blockscout/_topnav.html.eex:/opt/app/apps/block_scout_web/lib/block_scout_web/templates/layout/_topnav.html.eex
       - ./blockscout/_footer.html.eex:/opt/app/apps/block_scout_web/lib/block_scout_web/templates/layout/_footer.html.eex
     networks:
       - explorer
-
-  postgres:
-    image: postgres:13.4-alpine
-    container_name: postgres
-    restart: "on-failure"
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    volumes:
-      - ./postgres:/var/lib/postgresql/data
-    ports:
-      - 5432
-    networks:
-      - explorer
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 10s
-      retries: 5
