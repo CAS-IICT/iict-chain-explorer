@@ -20,9 +20,7 @@ services:
     networks:
       - explorer
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
-      interval: 5s
-      timeout: 10s
+      test: [ "CMD-SHELL", "pg_isready" ]
       retries: 5
   
   blockscout:
@@ -30,7 +28,7 @@ services:
     container_name: blockscout
     restart: "no"
     environment:
-      - PORT=${BLOCKSCOUT_PORT}
+      - PORT=4000
       - DATABASE_URL=ecto://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/postgres?ssl=false
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -60,12 +58,13 @@ services:
         echo $$MIX_ENV && mix do ecto.create, ecto.migrate; mix phx.server;
     depends_on:
       - postgres
-    links:
-      - postgres
     ports:
-      - ${BLOCKSCOUT_PORT}:${BLOCKSCOUT_PORT}
+      - 4000:4000
     volumes:
       - ./blockscout/_topnav.html.eex:/opt/app/apps/block_scout_web/lib/block_scout_web/templates/layout/_topnav.html.eex
       - ./blockscout/_footer.html.eex:/opt/app/apps/block_scout_web/lib/block_scout_web/templates/layout/_footer.html.eex
     networks:
       - explorer
+    healthcheck:
+      test: [ "CMD-SHELL", "curl http://blockscout:4000 || exit 1" ]
+      retries: 5
