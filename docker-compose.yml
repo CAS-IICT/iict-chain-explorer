@@ -1,7 +1,7 @@
 version: '3.6'
 
 networks:
-  default:
+  explorer:
     external:
       name: iict-chain-member_default
 
@@ -49,6 +49,8 @@ services:
     volumes:
       - ./blockscout/_topnav.html.eex:/opt/app/apps/block_scout_web/lib/block_scout_web/templates/layout/_topnav.html.eex
       - ./blockscout/_footer.html.eex:/opt/app/apps/block_scout_web/lib/block_scout_web/templates/layout/_footer.html.eex
+    networks:
+      - explorer
 
   postgres:
     image: postgres:13.4-alpine
@@ -61,6 +63,8 @@ services:
       - ./postgres:/var/lib/postgresql/data
     ports:
       - 5432
+    networks:
+      - explorer
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
