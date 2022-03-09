@@ -11,6 +11,10 @@
             <span class="logo-text in-footer <%= unless logo_footer(), do: "no-logo" %>"> <%= logo_text() %> </span>
           <% end %>
         <% end %>
+        <span style="margin-left:10px">&copy; COPYRIGHT 2022 BY<a target="_blank" style="color:#bda6e7">
+                    苏州中科乐联信息技术有限公司</a
+                  >&nbsp;&nbsp;&nbsp;&nbsp;
+                  <a href="http://beian.miit.gov.cn" target="_blank" style="color:#bda6e7">苏ICP备2022006780号</a ></span>
       </div>
     </div>
 
